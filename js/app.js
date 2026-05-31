@@ -1,4 +1,4 @@
-const WEBHOOK_URL = "https://sofiamichellejuarez.app.n8n.cloud/webhook-test/recuperatorio";
+const WEBHOOK_URL = "https://sofiamichellejuarez.app.n8n.cloud/webhook/recuperatorio";
 
 const formulario = document.getElementById("formulario");
 const resultado = document.getElementById("resultado");
