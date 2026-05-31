@@ -1,0 +1,450 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "002d56eb-aa62-4bb2-a776-8c06e8032771",
+              "name": "={{ $json.body.nombre}}",
+              "value": "={{ $json.body.nombre.toUpperCase()}}",
+              "type": "string"
+            },
+            {
+              "id": "d3ffe5cf-190f-4e5d-b9a9-deb0bd44fbc9",
+              "name": "id_tramite",
+              "value": "=REC-001",
+              "type": "string"
+            },
+            {
+              "id": "f5881469-2cff-41fe-a8d8-b9dd8815e948",
+              "name": "fecha",
+              "value": "={{$now}}",
+              "type": "string"
+            },
+            {
+              "id": "1b892064-2c3b-4a3e-a456-28d76d72a4a3",
+              "name": "DNI",
+              "value": "={{ $json.body.dni }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -80,
+        -480
+      ],
+      "id": "17544ec9-d171-4609-b75e-0366c198d155",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "POST"
+        ],
+        "path": "recuperatorio",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        -384
+      ],
+      "id": "90c943ef-7459-48f1-b00d-e108bcf2fdd0",
+      "name": "Metodo Post",
+      "webhookId": "ebecf61d-8a5e-4789-957f-b65c28e4790d",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b730fed4-4cc6-4d53-b5cc-71de7ddfdc7c",
+              "leftValue": "={{ $json.body.nombre }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0e17d1be-a64a-4be8-9a10-c8d15162d84c",
+              "leftValue": "={{ $json.body.dni }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "3f04021d-0b6e-4a65-b464-0e90fd1d5ae3",
+              "leftValue": "={{ $json.body.materia }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -288,
+        -384
+      ],
+      "id": "0a2ef428-4d00-40d1-9d1c-daa1e9722f13",
+      "name": "Verificación campos no vacios"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"error\",\n  \"mensaje\": \"Datos incompletos\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -80,
+        -288
+      ],
+      "id": "8b49cc73-171c-4370-9e98-515ce4734d90",
+      "name": "Respuesta: Error/campos vacios"
+    },
+    {
+      "parameters": {
+        "url": "https://6a1c52418858a003817bc623.mockapi.io/recuperatorios/alumnos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "DNI",
+              "value": "={{ $json.DNI }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        128,
+        -480
+      ],
+      "id": "57418e7c-1e53-4aa5-a121-54b152a3c2c8",
+      "name": "HTTP Request GET",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "608fd9fb-9c2f-4449-b0ba-5464648b52bc",
+              "leftValue": "={{$json.nota}}",
+              "rightValue": 6,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        -480
+      ],
+      "id": "5ddf6428-82e6-4920-b30a-a27b07ea0ea6",
+      "name": "Evaluación de nota"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7fbdfcb0-f658-4e95-81b3-b8c8cbca7854",
+              "leftValue": "={{ $json.materia }}",
+              "rightValue": "Programacion",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        544,
+        -576
+      ],
+      "id": "5ca6bb2d-72d6-429c-94db-74107b9362a6",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://6a1c52418858a003817bc623.mockapi.io/recuperatorios/solicitudes",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={\n  \"nombre\": \"{{$json.name}}\",\n  \"dni\": \"{{$json.DNI}}\",\n  \"materia\": \"{{$json.materia}}\",\n  \"fecha\": \"{{$now}}\"\n}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "DNI",
+              "value": "={{ $json.DNI }}"
+            },
+            {
+              "name": "materia",
+              "value": "={{ $json.materia }}"
+            },
+            {
+              "name": "fecha",
+              "value": "={{$now}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        768,
+        -576
+      ],
+      "id": "ec4248c0-4975-423c-8fc9-04a8c311c4e9",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"ok\",\n  \"mensaje\": \"Inscripción registrada correctamente\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        976,
+        -576
+      ],
+      "id": "7beb1ab1-f214-43c2-9357-103461a4a824",
+      "name": "respuesta positiva"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"rechazado\",\n  \"mensaje\": \"El alumno ya aprobó la materia y no puede inscribirse al recuperatorio\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        544,
+        -384
+      ],
+      "id": "0e34e18c-bda6-43fd-a0d1-7adf12e89fb4",
+      "name": "respuesta negativa"
+    },
+    {
+      "parameters": {
+        "content": "\n\n# 🔄 Descripción de los Nodos\n\n### 1️⃣ Webhook\n\nPunto de entrada del flujo.\nRecibe los datos del alumno enviados desde la página web.\n\n---\n\n### 2️⃣ IF - Validación de Datos\n\nVerifica que existan:\n\n* nombre\n* dni\n* materia\n\nSi algún dato falta, el flujo se detiene.\n\n---\n\n### 3️⃣ Edit Fields\n\nNormaliza y organiza los datos recibidos para facilitar su utilización en el resto del flujo.\n\n---\n\n### 4️⃣ HTTP Request (GET)\n\nConsulta una API externa desarrollada en MockAPI para obtener la información de los alumnos.\n\n---\n\n### 5️⃣ Filter\n\nFiltra la información obtenida y selecciona únicamente el alumno cuyo DNI coincide con el recibido desde el formulario.\n\n---\n\n### 6️⃣ IF - Evaluación de Nota\n\nCondición evaluada:\n\n```text\nnota < 6\n```\n\n### Justificación\n\n* Nota menor a 6 ➜ Puede solicitar recuperatorio.\n* Nota mayor o igual a 6 ➜ Ya aprobó la materia.\n\n---\n\n### 7️⃣ HTTP Request (POST)\n\nRegistra una nueva solicitud de recuperatorio en la API externa.\n\n---\n\n### 8️⃣ Respond to Webhook (Aprobado)\n\nDevuelve una respuesta de éxito.\n\n```json\n{\n  \"status\": \"ok\",\n  \"mensaje\": \"Inscripción registrada correctamente\"\n}\n```\n\n---\n\n### 9️⃣ Respond to Webhook (Rechazado)\n\nDevuelve una respuesta indicando que el alumno ya aprobó la materia.\n\n```json\n{\n  \"status\": \"rechazado\",\n  \"mensaje\": \"El alumno ya aprobó la materia y no puede inscribirse al recuperatorio\"\n}\n```\n\n---\n\n",
+        "height": 1040,
+        "width": 912,
+        "color": "#203725"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1536,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "6f025340-7fa0-498a-a1ff-51e5f777eae1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 🎓 Sistema de Solicitud de Recuperatorio Académico\n\n## 🎯 Descripción del Escenario\n\nEste flujo simula el proceso real de inscripción de un alumno a una mesa de recuperatorio.\n\nEl alumno completa un formulario web desarrollado en HTML, CSS y JavaScript indicando:\n\n* Nombre y Apellido\n* DNI\n* Materia\n\nEl sistema consulta una API externa (MockAPI) para verificar la situación académica del alumno.\n\n### Resultado\n\n✅ Si la nota es menor a 6:\n\n* Se registra automáticamente una solicitud de recuperatorio.\n* Se devuelve una respuesta de éxito.\n\n❌ Si la nota es igual o superior a 6:\n\n* La solicitud es rechazada.\n* Se informa que el alumno ya aprobó la materia.\n\n---",
+        "height": 448,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1536,
+        -960
+      ],
+      "typeVersion": 1,
+      "id": "f622949e-abe7-4e5a-b77a-738ee5cf0a47",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# 🚀 Trigger del Flujo\n\n### Nodo: Webhook\n\n**Método HTTP:** POST\n\nRecibe datos enviados desde la aplicación web.\n\n### Ejemplo de Payload\n\n```json\n{\n  \"nombre\": \"Juan Perez\",\n  \"dni\": \"40123456\",\n  \"materia\": \"Programacion\"\n}\n```\n\n---\n",
+        "height": 336,
+        "width": 400,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -288,
+        -944
+      ],
+      "typeVersion": 1,
+      "id": "05d447f0-bde3-4b36-b26d-cbe2438c358c",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metodo Post": {
+      "main": [
+        [
+          {
+            "node": "Verificación campos no vacios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificación campos no vacios": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta: Error/campos vacios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request GET": {
+      "main": [
+        [
+          {
+            "node": "Evaluación de nota",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluación de nota": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "respuesta negativa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "respuesta positiva",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5d5c5215-a1fd-4ede-9aac-9812011eb03f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "da57903e3f8ff321d72fdfbc5e46d009d95b2bdafee02aa5a1a0d30bdbe6163e"
+  },
+  "id": "RJNUA86RCn4gfUNO",
+  "tags": []
+}
