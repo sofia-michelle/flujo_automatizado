@@ -2,7 +2,7 @@
 
 ## Nombre del Caso de Uso
 
-Sistema de Solicitud de Recuperatorio Académico mediante Webhook y API REST.
+Sistema de Solicitud de Recuperatorio Académico mediante Webhook y API.
 
 ---
 
@@ -20,9 +20,7 @@ Si el alumno posee una nota inferior a 6, se registra automáticamente una solic
 
 Nodo utilizado: **Webhook**
 
-Método HTTP:
-
-POST
+Método HTTP:  POST
 
 Path:
 
@@ -68,11 +66,6 @@ Variables utilizadas:
 
 Realiza una petición GET a una API externa desarrollada en MockAPI para obtener la lista de alumnos registrados.
 
-Endpoint utilizado:
-
-```text
-https://6a1c52418858a003817bc623.mockapi.io/recuperatorios/alumnos
-```
 
 ### 5. Filter
 
@@ -98,15 +91,7 @@ Los alumnos con nota igual o superior a 6 ya aprobaron la materia y no pueden in
 
 Si el alumno cumple la condición anterior, se registra una nueva solicitud de recuperatorio en la API externa.
 
-Endpoint utilizado:
-
-```text
-https://6a1c52418858a003817bc623.mockapi.io/recuperatorios/solicitudes
-```
-
-Método:
-
-POST
+Método:  POST
 
 ### 8. Respond to Webhook (Aprobado para Recuperatorio)
 
@@ -178,7 +163,7 @@ Alumno que no puede solicitar recuperatorio:
 
 ---
 
-## Resultado Esperado
+## Resultado 
 
 ### Caso 1: Alumno Desaprobado
 
